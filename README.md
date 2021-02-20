@@ -31,3 +31,21 @@ or
 ```sh
 cat md_template_file.md | mdexec > output.md
 ```
+
+
+```sh
+mdexec -h
+Usage: mdexec [OPTIONS] [FILE]
+Execute commands in markdown and embeds the result in the output
+
+FILE can be both file name or - to read from stdin
+
+  -template string
+        Template to use when rendering a command block (default "```sh\n$ {{ .Command }}\n{{ .Output }}\n```\n")
+
+Fields available in the template:
+  {{ .Command }}  string - the command that was executed
+  {{ .Output }}   string - command output
+  {{ .Error }}    error  - Execution error
+  {{ .Duration }} int64  - execution duration in ns
+```

@@ -26,7 +26,7 @@ func getTemplateFunctions() template.FuncMap {
 func main() {
 	blockTemplate := flag.String("template", defaultTemplate, "Template to use when rendering a command block")
 	flag.Usage = func() {
-		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s [OPTIONS] [FILE]:\n", os.Args[0])
+		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s [OPTIONS] [FILE]\n", os.Args[0])
 		fmt.Fprintln(flag.CommandLine.Output(), "Execute commands in markdown and embeds the result in the output")
 		fmt.Fprintln(flag.CommandLine.Output(), "")
 		fmt.Fprintln(flag.CommandLine.Output(), "FILE can be both file name or - to read from stdin")
