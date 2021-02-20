@@ -77,6 +77,7 @@ func main() {
 		}
 		defer file.Close()
 		processFile(file)
+	} else {
+		processFile(os.Stdin)
 	}
-	processFile(os.Stdin)
 }
