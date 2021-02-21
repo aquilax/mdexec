@@ -1,5 +1,7 @@
 # mdexec
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/aquilax/mdexec.svg)](https://pkg.go.dev/github.com/aquilax/mdexec)
+
 Executes commands in a markdown file and embeds the result
 
 ## Format
