@@ -8,6 +8,7 @@ import (
 	"os"
 	"text/template"
 
+	"github.com/acarl005/stripansi"
 	"github.com/aquilax/mdexec"
 )
 
@@ -15,12 +16,16 @@ const codefence = "```"
 
 const defaultTemplate = codefence + `sh
 $ {{ .Command }}
-{{ .Output }}
+{{ stripAnsi .Output }}
 ` + codefence + `
 `
 
 func getTemplateFunctions() template.FuncMap {
-	return template.FuncMap{}
+	return template.FuncMap{
+		"stripAnsi": func(output string) string {
+			return stripansi.Strip(output)
+		},
+	}
 }
 
 func main() {
@@ -34,10 +39,12 @@ func main() {
 		flag.PrintDefaults()
 		fmt.Fprintln(flag.CommandLine.Output(), "")
 		fmt.Fprintln(flag.CommandLine.Output(), "Fields available in the template:")
-		fmt.Fprintln(flag.CommandLine.Output(), "  {{ .Command }}  string - the command that was executed")
-		fmt.Fprintln(flag.CommandLine.Output(), "  {{ .Output }}   string - command output")
-		fmt.Fprintln(flag.CommandLine.Output(), "  {{ .Error }}    error  - Execution error")
-		fmt.Fprintln(flag.CommandLine.Output(), "  {{ .Duration }} int64  - execution duration in ns")
+		fmt.Fprintln(flag.CommandLine.Output(), "  .Command  string - The command that was executed")
+		fmt.Fprintln(flag.CommandLine.Output(), "  .Output   string - Command output")
+		fmt.Fprintln(flag.CommandLine.Output(), "  .Error    error  - Execution error")
+		fmt.Fprintln(flag.CommandLine.Output(), "  .Duration int64  - Execution duration in ns")
+		fmt.Fprintln(flag.CommandLine.Output(), "Template functions:")
+		fmt.Fprintln(flag.CommandLine.Output(), "  stripAnsi var    - Strips the ansi characters from the variable")
 	}
 
 	flag.Parse()
