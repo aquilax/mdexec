@@ -43,11 +43,13 @@ Execute commands in markdown and embeds the result in the output
 FILE can be both file name or - to read from stdin
 
   -template string
-        Template to use when rendering a command block (default "```sh\n$ {{ .Command }}\n{{ .Output }}\n```\n")
+        Template to use when rendering a command block (default "```sh\n$ {{ .Command }}\n{{ stripAnsi .Output }}\n```\n")
 
 Fields available in the template:
-  {{ .Command }}  string - the command that was executed
-  {{ .Output }}   string - command output
-  {{ .Error }}    error  - Execution error
-  {{ .Duration }} int64  - execution duration in ns
+  .Command  string - The command that was executed
+  .Output   string - Command output
+  .Error    error  - Execution error
+  .Duration int64  - Execution duration in ns
+Template functions:
+  stripAnsi var    - Strips the ansi characters from the variable
 ```
