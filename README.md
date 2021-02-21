@@ -53,3 +53,7 @@ Fields available in the template:
 Template functions:
   stripAnsi var    - Strips the ansi characters from the variable
 ```
+
+# Similar projects
+
+* https://zimbatm.github.io/mdsh/
