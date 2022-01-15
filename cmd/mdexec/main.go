@@ -50,11 +50,11 @@ func main() {
 	flag.Parse()
 	var stream io.ReadCloser
 	var err error
-	if len(os.Args) > 1 && os.Args[1] != "" {
-		if os.Args[1] == "-" {
+	if len(flag.Args()) > 0 && flag.Arg(0) != "" {
+		if flag.Arg(0) == "-" {
 			stream = os.Stdin
 		} else {
-			stream, err = os.Open(os.Args[1])
+			stream, err = os.Open(flag.Arg(0))
 			if err != nil {
 				log.Fatal(err)
 			}
