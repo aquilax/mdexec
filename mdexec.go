@@ -106,6 +106,9 @@ func ProcessStreamWithExecutor(inStream io.Reader, outStream io.Writer, tmpl *te
 			tmpl.Execute(outStream, templateContext)
 			continue
 		}
+		if strings.HasPrefix(line, "`#$ ") {
+			line = string(append([]byte{'`', '$'}, []byte(line)[4:]...))
+		}
 		fmt.Fprintln(outStream, line)
 	}
 

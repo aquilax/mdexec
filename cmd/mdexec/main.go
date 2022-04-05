@@ -30,6 +30,10 @@ func getTemplateFunctions() template.FuncMap {
 
 func main() {
 	blockTemplate := flag.String("template", defaultTemplate, "Template to use when rendering a command block")
+
+	// use stdout instead of stderr for output
+	flag.CommandLine.SetOutput(os.Stdout)
+
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s [OPTIONS] [FILE]\n", os.Args[0])
 		fmt.Fprintln(flag.CommandLine.Output(), "Execute commands in markdown and embeds the result in the output")
@@ -46,7 +50,6 @@ func main() {
 		fmt.Fprintln(flag.CommandLine.Output(), "Template functions:")
 		fmt.Fprintln(flag.CommandLine.Output(), "  stripAnsi var    - Strips the ansi characters from the variable")
 	}
-
 	flag.Parse()
 	var stream io.ReadCloser
 	var err error
