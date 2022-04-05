@@ -3,12 +3,10 @@ package mdexec
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"io"
 	"log"
 	"os"
 	"os/exec"
-	"strings"
 	"text/template"
 	"time"
 
@@ -17,7 +15,7 @@ import (
 
 const codefence = "```"
 
-const defaultTemplate = codefence + `sh
+const DefaultTemplate = codefence + `sh
 $ {{ .Command }}
 {{ .Output }}
 ` + codefence + `
@@ -82,20 +80,22 @@ func ProcessStream(inStream io.Reader, outStream io.Writer, tmpl *template.Templ
 // calling the executor function for each command
 func ProcessStreamWithExecutor(inStream io.Reader, outStream io.Writer, tmpl *template.Template, executor Executor) error {
 	scanner := bufio.NewScanner(inStream)
-	var line string
-	var trimmedLine string
+	var line []byte
+	var trimmedLine []byte
 	var err error
 	var templateContext TemplateContext
 	if err != nil {
 		return err
 	}
+	commandPrefix := []byte("`$ ")
+	commentedCommandPrefix := []byte("`#$ ")
 
 	for scanner.Scan() {
-		line = scanner.Text()
-		if strings.HasPrefix(line, "`$ ") {
-			trimmedLine = strings.TrimSpace(line)
+		line = scanner.Bytes()
+		if bytes.HasPrefix(line, commandPrefix) {
+			trimmedLine = bytes.TrimSpace(line)
 			// get command
-			templateContext.Command = trimmedLine[3 : len(trimmedLine)-1]
+			templateContext.Command = string(trimmedLine[3 : len(trimmedLine)-1])
 			// run command
 			templateContext.Output, templateContext.Duration, err = executor(templateContext.Command)
 			if err != nil {
@@ -106,10 +106,13 @@ func ProcessStreamWithExecutor(inStream io.Reader, outStream io.Writer, tmpl *te
 			tmpl.Execute(outStream, templateContext)
 			continue
 		}
-		if strings.HasPrefix(line, "`#$ ") {
-			line = string(append([]byte{'`', '$'}, []byte(line)[4:]...))
+		if bytes.HasPrefix(line, commentedCommandPrefix) {
+			line = append(commandPrefix, line[len(commentedCommandPrefix):]...)
 		}
-		fmt.Fprintln(outStream, line)
+		_, err := outStream.Write(append(line, '\n'))
+		if err != nil {
+			return err
+		}
 	}
 
 	if err = scanner.Err(); err != nil {
